@@ -1,5 +1,4 @@
 # Vizsgaremek
----
 **Készítők:**
 - Pápista Roland
 - Kurucz Zsolt
