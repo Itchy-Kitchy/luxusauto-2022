@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require("express");
+const cors = require('cors');
 const app = express();
 const mysql = require('mysql');
 const bcrypt = require('bcrypt');
@@ -8,6 +9,7 @@ const bodyParser = require('body-parser')
 const path = require("path");
 const static = path.join(__dirname, "static");
 
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(express.static(path.join(__dirname + '/static')));
