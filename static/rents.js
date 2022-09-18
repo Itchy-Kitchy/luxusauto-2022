@@ -2,7 +2,7 @@ const loadEvent = () => {
     const root = document.getElementById('root');
 
     const getRents = async () => {
-        const allRents = await fetch('/api/admin/rents');
+        const allRents = await fetch('http://localhost:8080/api/admin/rents');
         return allRents.json()
     }
 

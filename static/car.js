@@ -6,7 +6,7 @@ const loadEvent = () => {
     const lplate = window.location.href.split("/").pop();
 
     const getAuto = async () => {
-        const singleAuto = await fetch(`/api/cars/${lplate}`);
+        const singleAuto = await fetch(`http://localhost:8080/api/cars/${lplate}`);
         return singleAuto.json()
     }
 

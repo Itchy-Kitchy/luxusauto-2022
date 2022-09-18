@@ -2,7 +2,7 @@ const loadEvent = () => {
     const root = document.getElementById('root');
 
     const getAutos = async () => {
-        const allAutos = await fetch('/api/cars');
+        const allAutos = await fetch('http://localhost:8080/api/cars');
         return allAutos.json()
     }
 

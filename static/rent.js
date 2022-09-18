@@ -3,7 +3,7 @@ const loadEvent = () => {
     const email = window.location.href.split("/").pop();
 
     const getRent = async () => {
-        const singleRent = await fetch(`/api/admin/rents/${email}`);
+        const singleRent = await fetch(`http://localhost:8080/api/admin/rents/${email}`);
         return singleRent.json()
     }
 
