@@ -14,7 +14,7 @@ const loadEvent = () => {
             <p class="card-text">${car.rentprice} Ft/ hó</p>
         </div>`
     const autoCardDiv = document.createElement("div");
-    const classes = ["card", "mx-4", "border", "border-secondary", "rounded"];
+    const classes = ["card", "mx-4", "mb-4", "border", "border-secondary", "rounded"];
         autoCardDiv.classList.add(...classes);
         autoCardDiv.style.backgroundColor = "lightgrey";
         autoCardDiv.innerHTML = autoCardContent;
