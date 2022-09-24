@@ -15,7 +15,7 @@ const loadEvent = () => {
             <a href="/car/${car.lplate}" class="btn btn-secondary ">Megtekintés</a>
         </div>`
     const autoCardDiv = document.createElement("div");
-    const classes = ["card", "mx-4", "border", "border-secondary", "rounded"];
+    const classes = ["card", "mx-4", "mb-4", "border", "border-secondary", "rounded"];
         autoCardDiv.classList.add(...classes);
         autoCardDiv.style.backgroundColor = "lightgrey";
         autoCardDiv.innerHTML = autoCardContent;
