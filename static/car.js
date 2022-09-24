@@ -23,7 +23,7 @@ const loadEvent = () => {
             <p class="card-text">Szín: ${car.color}</p>
             <hr>
             <h5 class="card-text text-center">Bérlés</h5>
-            <form action="/api/cars/${car.lplate}" method="post">
+            <form action="http://localhost:8080/api/cars/${car.lplate}" method="post">
                 
                 <div class="row">
                     <div class="form-group col-md-6">
