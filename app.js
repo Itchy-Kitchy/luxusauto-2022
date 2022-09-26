@@ -4,186 +4,250 @@ const cors = require('cors');
 const app = express();
 const mysql = require('mysql');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const bodyParser = require('body-parser')
 const path = require("path");
-const static = path.join(__dirname, "static");
+const jwt = require('jsonwebtoken');
 
 app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({extended:true}));
-app.use(express.static(path.join(__dirname + '/static')));
-// app.use(express.static(static));
-
-const users = [];
 
 const pool = mysql.createPool({
-    host: 'localhost',
-    port: 3306,
-    user: 'root',
-    password: '',
-    database: 'fastluxury'
-})
-
-// Főoldal
-
-app.get("/", (req, res) => {
-    res.sendFile(path.join(static,"index.html"))
-})
-
-app.get("/cars", (req, res) => {
-    res.sendFile(path.join(static,"cars.html"))
-})
-
-app.get("/car/:lplate", function (req, res) {
-        res.sendFile(path.join(static,"car.html"))
+    host:process.env.HOST,
+    port:process.env.PORT,
+    user:process.env.USER,
+    password:process.env.PASSWORD,
+    database:process.env.DATABASE
 });
 
-app.get("/api/cars", function (req, res) {
-    const q = "SELECT * FROM cars;";
-    pool.query(q, 
-        function (error, results) {
-            if (!error) {
-                res.json(results)
-            }
-        }
-    );
-});
-
-app.get("/about", function (req, res) {
-    res.sendFile(path.join(static,"about.html"))
-});
-
-// Admin felület
-
-app.get("/admin", function (req, res) {
-    res.sendFile(path.join(static,"admin.html"))
-});
-
-app.post("/admin", function (req, res) {
-    const password = "teslaisbest";
-    if (req.body.adminpass == password) {
-        res.redirect("admin/rents")
-    }
-    else {
-        res.send({message: "Hibás jelszó!"})
-    }
-});
-
-app.get("/rents/:email", function (req, res) {
-        res.sendFile(path.join(static, "rent.html")) 
-});
-
-app.get("/admin/rents", function (req, res) {
-    res.sendFile(path.join(static, "rents.html"))
-});
-
-app.get("/api/admin/rents", function (req, res) {
-    const q = "SELECT * FROM rents;"
-    pool.query(q,
-        function (error, results) {
-            if (!error) {
-                res.json(results)
-            }
-        }
-    );
-});
-
-app.get("/api/admin/rents/:email", function (req, res) {
-    const q = "SELECT * FROM rents WHERE email = ?;";
-    pool.query(q, [req.params.email],
-        function (error, results) {
-            if (!error && results[0]) {
-                res.json(results[0])
-            }
-        }    
-    );
-});
-
-app.post("/rents/:email", function (req, res) {
-    const q = "DELETE FROM rents WHERE email = ?";
-    pool.query(q, [req.params.email],
-        function (error, results) {
-            if (!error) {
-                res.redirect("/admin/rents")
-            }
-        }    
-    );
-});
-
-// Felhasználók
-
-app.get("/users", (req, res) => {
-    res.sendFile(path.join(static,"users.html"))
-});
-
-app.get("/users/login", (req, res) => {
-    res.sendFile(path.join(static,"login.html"))
-});
-
-// Regisztráció
-
-app.post('/users', (req, res) => {
-    const username = req.body.username;
-    const userpassword = req.body.userpassword
-    const user = users.find(user => user.name == username);
-    if (user) return res.status(400).send("Van már ilyen nevű felhasználó!");
-
-    const hash = bcrypt.hashSync(userpassword, 10);
-    users.push({name: username, password: hash});
-    res.redirect("/users/login");
-});
-
-// Bejelentkezés
-
-app.post('/users/login', (req, res) => {
-    const username = req.body.username;
-    const userpassword = req.body.userpassword;
-    const user = users.find(user => user.name == username);
-    if (!user) return res.status(401).send("Nincs ilyen nevű felhasználó!");
-    if (!bcrypt.compareSync(userpassword, user.password)) {
-        return res.status(401).send("Hibás jelszó!");
-    }
-    const token = jwt.sign(user, process.env.TOKEN_SECRET, {expiresIn: 3600});
-    res.redirect("/cars");
-});
-
-// Token ellenőrzés
+// Azonosítás
 
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
-    if (!token) return res.status(401).send({message: "Azonosítás szükséges!"});
-    jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
-        if (err) return res.status(403).send({message: "Nincs jogosultsága!"});
+    if (!token) {
+        return res.status(401).send({message: "Azonosítás szükséges!"});
+    }
+    jwt.verify(token, process.env.TOKEN_SECRET, (error, user) => {
+        if (error) {
+            return res.status(403).send({message: "Nincs jogosultsága!"});
+        }
         req.user = user;
         next();
     });
 }
 
-app.get("/api/cars/:lplate", function (req, res) {
-    const q = "SELECT * FROM cars WHERE lplate = ?;";
-    pool.query(q, [req.params.lplate],
+// Regisztráció
+
+app.post('/api/users', (req, res) => {
+    const usernamecheck = "SELECT username FROM users WHERE username=?";
+    const newuser = "INSERT INTO users (username, userpassword, useremail) VALUES (?, ?, ?)";
+    pool.query(usernamecheck, [req.body.newusername],
         function (error, results) {
-            if (!error && results[0]) {
-                res.json(results)
+            if (results[0] && !error) {
+                return res.status(400).send({message: "Van már ilyen nevű felhasználó!"});
+            }
+            else if (error) {
+                return res.status(400).send({message: error});
+            }
+            else {
+                const newuserhash = bcrypt.hashSync(req.body.newuserpassword, 10);
+                pool.query(newuser, [req.body.newusername, newuserhash, req.body.newuseremail],
+                    function(error) {
+                        if (!error) {
+                            return res.status(201).send({message: "Sikeres regisztráció!"});
+                        } 
+                        else {
+                            return res.status(500).send({message: error});
+                        }
+                    }
+                );
             }
         }
     );
 });
 
-app.post("/api/cars/:lplate", function (req, res) {
-    const q = "INSERT INTO rents (lplate, email, startdate, fname, lname) VALUES (?, ?, ?, ?, ?)"
-    pool.query(q, [req.params.lplate, req.body.email, req.body.startdate, req.body.fname, req.body.lname],
+// Bejelentkezés
+
+app.post('/api/login', (req, res) => {
+    const getuser = "SELECT * FROM users WHERE username=?"
+    let token = "";
+    pool.query(getuser, [req.body.myusername],
         function (error, results) {
-            if (!error) {
-                res.redirect("/cars");
+            if (results[0] && !error) {
+                if (bcrypt.compareSync(req.body.myuserpassword, results[0].userpassword)) {
+                    token = jwt.sign({
+                        username:req.body.myusername, 
+                        userpassword:results[0].myuserpassword, 
+                        useremail:results[0].useremail
+                        },
+                        process.env.TOKEN_SECRET, 
+                        { expiresIn: 3600 }
+                    );
+                    return res.status(200).json({
+                        token: token,
+                        useremail:results[0].useremail, 
+                        message: "Sikeres bejelentkezés!"
+                    });
+                }
+                else {
+                    return res.status(400).send({message: "Hibás jelszó!"});
+                }
             }
             else {
-                res.send("Ez az autó jelenleg foglalt!");
+                return res.status(500).send({message: error});
+            }
+        }
+    );
+});
+
+// Minden autó
+
+app.get('/api/allcars', (req, res) => {
+    const getallcars = "SELECT * FROM cars";
+    pool.query(getallcars,
+        function (error, results) {
+            if (!results[0]) {
+                return res.status(204).send({message: "Nincs még rendelhető autónk"});
+            }
+            else if (!error) {
+                return res.status(200).send(results);
+            }
+            else {
+                return res.status(500).send({message: error});
             }
         }
     )
 });
 
-app.listen(8080 , () => console.log("Szerver elindítva az 8080-es porton."));
+// Elérhető autók
+
+app.get('/api/cars', authenticateToken, (req, res) => {
+    const getavailablecars = "SELECT * FROM cars WHERE available = 1";
+    pool.query(getavailablecars,
+        function (error, results) {
+            if (!results[0]) {
+                return res.status(204).send({message: "Nincs jelenleg elérhető autónk!"});
+            }
+            else if (!error) {
+                return res.status(200).send(results);
+            }
+            else {
+                return res.status(500).send({message: error});
+            }
+        }
+    )
+});
+
+// Konkrét autó
+
+app.get('/api/cars/:lplate', (req, res) => {
+    const getcar = "SELECT * FROM cars WHERE lplate =?";
+    pool.query(getcar, [req.params.lplate],
+        function (error, results) {
+            if (!results[0]) {
+                return res.status(204).send({message: "Ez az autó nem elérhető!"});
+            }
+            else if (!error) {
+                return res.status(200).send(results);
+            }
+            else {
+                return res.status(500).send({message: error});
+            }
+        }
+    );
+});
+
+// Autó bérlése
+
+app.post('api/cars/:lplate', authenticateToken, (req, res) => {
+    const rentcar = "INSERT INTO rents (lplate, useremail, firstname, lastname, startdate, enddate) VALUES (?, ?, ?, ?, ?, ?)";
+    const setcarunavailable = "UPDATE cars SET available = 0 WHERE lplate=?";
+    pool.query(
+        rentcar,
+        [req.params.lplate],
+        [req.body.useremail],
+        [req.body.firstname],
+        [req.body.lastname],
+        [req.body.startdate],
+        [req.body.enddate],
+        function (error, results) {
+            if (!error) {
+                pool.query(setcarunavailable, [req.params.lplate]);
+                return res.status(201).send({message: "Sikeres bérlés!"});
+            }
+            else {
+                return res.status(500).send({message: error});
+            }
+        }
+    );
+});
+
+// Admin belépés
+
+app.post('/api/admin', (req, res) => {
+    const adminpassword = "teslaisbest";
+    if (req.body.adminpassword == adminpassword) {
+        return res.status(200).send({message: "ok"});
+    }
+    else {
+        return res.status(400).send({message: "Hibás jelszó!"});
+    }
+});
+
+// Bérlések
+
+app.get('/api/admin/rents', (req, res) => {
+    const getrents = "SELECT * FROM rents";
+    pool.query(getrents,
+        function (error, results) {
+            if (!results[0]) {
+                return res.status(204).send({message: "Nincs még feladott rendelés!"});
+            }
+            else if (!error) {
+                return res.status(200).send(results);
+            }
+            else {
+                return res.status(500).send({message: error});
+            }
+        }
+    );
+});
+
+// Konkrét bérlés
+
+app.get('/api/admin/rents/:email', (req, res) => {
+    const getrent = "SELECT * FROM rents WHERE email =?";
+    pool.query(getrent, [req.params.email],
+        function (error, results) {
+            if (!results[0]) {
+                return res.status(204).send({message: "Nincs ezzel az email címmel bérlés!"});
+            }
+            else if (!error) {
+                return res.status(200).send(results);
+            }
+            else {
+                return res.status(500).send({message: error});
+            }
+        }
+    );
+});
+
+// Bérlés törlése
+
+app.post('/api/admin/rents/:email', (req, res) => {
+    const delrent = "DELETE FROM rents WHERE email =?"
+    pool.query(delrent, [req.params.email],
+        function (error, results) {
+            if (!results[0]) {
+                return res.status(204).send({message: "Nincs ezzel az email címmel bérlés!"});
+            }
+            if (!error) {
+                return res.status(200).send({message: "Rendelés törölve!"});
+            }
+            else {
+                return res.status(500).send({message: error});
+            }
+        }
+    );
+});
+
+app.listen(8080, () => console.log("Szerver elindítva a 8080-as porton."));
