@@ -16,7 +16,7 @@ const loadEvent = () => {
         <p class="card-text">Kezdés: <strong>${rent.startdate}</strong></p>
     </div>
     <div class="row mx-auto">
-        <form class="mb-2" action="http://localhost:8080/rents/${rent.email}" method="post">
+        <form class="mb-2" action="http://localhost:8080/admin/rents/${rent.email}" method="post">
             <button type="submit" class="btn btn-danger btn-lg mt-4"><strong>Törlés</strong></button>
         </form>
     </div>`

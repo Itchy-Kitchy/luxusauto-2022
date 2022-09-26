@@ -1,8 +1,9 @@
 const loadEvent = () => {
     const root = document.getElementById('root');
+    const url = 'http://localhost:8080/api/admin/rents'
 
     const getRents = async () => {
-        const allRents = await fetch('http://localhost:8080/api/admin/rents');
+        const allRents = await fetch(url);
         return allRents.json()
     }
 
@@ -14,7 +15,7 @@ const loadEvent = () => {
                     <p class="card-text">Rendszám: <strong>${rent.lplate}</strong></p>
                     <p class="card-text">Név: <strong>${rent.fname} ${rent.lname}</strong></p>
                     <p class="card-text">Kezdés: <strong>${rent.startdate}</strong></p>
-                    <a href="../rents/${rent.email}" class="btn btn-primary">Kezelés</a>
+                    <a href="http://localhost:8080/api/admin/rents/${rent.email}" class="btn btn-primary">Kezelés</a>
                 </div>
             </div>`
     const rentCardDiv = document.createElement("div");

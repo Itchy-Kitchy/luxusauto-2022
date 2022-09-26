@@ -1,8 +1,13 @@
 const loadEvent = () => {
+    const url = 'http://localhost:8080/api/cars';
+    const token = 'Bearer: ' + sessionStorage.token;
     const root = document.getElementById('root');
 
     const getAutos = async () => {
-        const allAutos = await fetch('http://localhost:8080/api/cars');
+        const allAutos = await fetch(url, {
+            method: 'GET',
+            headers: {'Authorization': token}
+        });
         return allAutos.json()
     }
 
@@ -12,7 +17,7 @@ const loadEvent = () => {
         <div class="card-body d-flex flex-column justify-content-end">
             <h4 class="card-title">${car.brand} ${car.type}</h4>
             <p class="card-text">${car.rentprice} Ft/ hó</p>
-            <a href="/car/${car.lplate}" class="btn btn-secondary ">Megtekintés</a>
+            <a href="http://localhost:8080/api/cars/${car.lplate}" class="btn btn-secondary ">Megtekintés</a>
         </div>`
     const autoCardDiv = document.createElement("div");
     const classes = ["card", "mx-4", "mb-4", "border", "border-secondary", "rounded"];
@@ -30,7 +35,9 @@ const loadEvent = () => {
         });
     }
 
-    getAutos().then((response) => viewAutos(response));
+    getAutos()
+    .then((response) => viewAutos(response))
+    .catch(error => alert(error))
 
 }
 

@@ -23,34 +23,40 @@
       <div class="collapse navbar-collapse" id="navbarToggler">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="/">Kezdőlap</a>
+            <a class="nav-link" aria-current="page" href="index.html">Kezdőlap</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="/about">Rólunk</a>
+            <a class="nav-link" aria-current="page" href="about.html">Rólunk</a>
           </li>
         </ul>
       </div>
       <div class="navbar-nav ms-auto">
-        <a href="/users/login" class="nav-item nav-link">Bejelentkezés</a>
+        <a href="login.html" class="nav-item nav-link">Bejelentkezés</a>
       </div>
     </div>
   </nav>
   <h1 class="text-center mt-2">Új felhasználó</h1>
-  <form action="/users" method="post">
+  <form>
     <div class="form-group mx-4">
-      <label for="username">Felhasználónév:</label>
-      <input type="text" class="form-control" name="username" id="username">
+      <label for="newusername">Felhasználónév:</label>
+      <input type="text" class="form-control" name="newusername" id="newusername">
     </div>
     <div class="form-group mx-4">
-      <label for="userpassword">Jelszó:</label>
-      <input type="password" class="form-control" name="userpassword" id="userpassword">
+      <label for="newuseremail">Email cím:</label>
+      <input type="email" class="form-control" name="newuseremail" id="newuseremail">
     </div>
-    <input class="btn btn-primary mx-4 mt-4" type="submit" value="Regisztráció">
+    <div class="form-group mx-4">
+      <label for="newuserpassword">Jelszó:</label>
+      <input type="password" class="form-control" name="newuserpassword" id="newuserpassword">
+    </div>
+    <input class="btn btn-primary mx-4 mt-4" type="submit" id="ok" value="Regisztráció">
   </form>
-  <p class="ms-4 mt-2"><a href="/users/login">Bejelentkezés</a></p>
+  <p class="ms-4 mt-2"><a href="login.html">Bejelentkezés</a></p>
   <div class="bg-dark" style="position: fixed; bottom: 0; width: 100%; text-align: right;">
-    <a class="text-danger mx-2" style="text-decoration: none;" href="/admin">Admin</a>
+    <a class="text-danger mx-2" style="text-decoration: none;" href="admin.html">Admin</a>
   </div>
+
+  <script src="users.js"></script>
 </body>
 
 </html>

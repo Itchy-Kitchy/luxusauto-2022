@@ -1,8 +1,15 @@
 const loadEvent = () => {
+    const url = 'http://localhost:8080/api/allcars';
+    const token = 'Bearer: ' + sessionStorage.token;
     const root = document.getElementById('root');
 
     const getAutos = async () => {
-        const allAutos = await fetch('http://localhost:8080/api/cars');
+        const allAutos = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token
+            }
+        });
         return allAutos.json()
     }
 
