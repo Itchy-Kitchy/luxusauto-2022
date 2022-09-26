@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 24, 2022 at 03:44 PM
+-- Generation Time: Sep 27, 2022 at 01:32 AM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 8.1.1
 
@@ -46,9 +46,9 @@ CREATE TABLE `cars` (
 --
 
 INSERT INTO `cars` (`lplate`, `brand`, `type`, `available`, `rentprice`, `imageURL`, `year`, `power`, `drive`, `engine`, `color`) VALUES
-('asd123', 'Ferrari', 'Roma', 0, 100000, 'https://upload.wikimedia.org/wikipedia/commons/c/c5/2021_Ferrari_Roma_Front.jpg', 2020, 612, 'benzines', 'V8', 'bézs'),
-('bgt255', 'Chevrolet', 'Corvette C8', 0, 69000, 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Chevrolet_Corvette_C8_Stingray_blue.jpg/1920px-Chevrolet_Corvette_C8_Stingray_blue.jpg', 2020, 490, 'benzines', 'V8', 'világoskék'),
-('jag333', 'Jaguar', 'F-Type SVR', 0, 89000, 'https://upload.wikimedia.org/wikipedia/commons/0/0e/Jaguar_F-Type_-_Mondial_de_l%27Automobile_de_Paris_2016_-_001.jpg', 2020, 567, 'benzines', 'V8', 'narancsssárga'),
+('asd123', 'Ferrari', 'Roma', 1, 100000, 'https://upload.wikimedia.org/wikipedia/commons/c/c5/2021_Ferrari_Roma_Front.jpg', 2020, 612, 'benzines', 'V8', 'bézs'),
+('bgt255', 'Chevrolet', 'Corvette C8', 1, 69000, 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Chevrolet_Corvette_C8_Stingray_blue.jpg/1920px-Chevrolet_Corvette_C8_Stingray_blue.jpg', 2020, 490, 'benzines', 'V8', 'világoskék'),
+('jag333', 'Jaguar', 'F-Type SVR', 1, 89000, 'https://upload.wikimedia.org/wikipedia/commons/0/0e/Jaguar_F-Type_-_Mondial_de_l%27Automobile_de_Paris_2016_-_001.jpg', 2020, 567, 'benzines', 'V8', 'narancsssárga'),
 ('lkj234', 'Porsche', 'Taycan Turbo', 1, 120000, 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Porsche_Taycan_at_IAA_2019_IMG_0786.jpg/1200px-Porsche_Taycan_at_IAA_2019_IMG_0786.jpg', 2019, 671, 'elektromos', 'AC', 'fehér'),
 ('qwe987', 'Tesla', 'Model S', 1, 78000, 'https://upload.wikimedia.org/wikipedia/commons/1/14/2018_Tesla_Model_S_75D.jpg', 2019, 605, 'elektromos', 'dual', 'piros'),
 ('sup678', 'Toyota', 'GR Supra', 1, 69000, 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/2020_Toyota_GR_Supra_%28United_States%29.png/1920px-2020_Toyota_GR_Supra_%28United_States%29.png', 2020, 335, 'benzines', 'I6', 'fehér');
@@ -61,7 +61,7 @@ INSERT INTO `cars` (`lplate`, `brand`, `type`, `available`, `rentprice`, `imageU
 
 CREATE TABLE `rents` (
   `lplate` varchar(6) COLLATE utf8mb4_hungarian_ci NOT NULL,
-  `email` text COLLATE utf8mb4_hungarian_ci NOT NULL,
+  `email` varchar(40) COLLATE utf8mb4_hungarian_ci NOT NULL,
   `startdate` date NOT NULL,
   `fname` varchar(20) COLLATE utf8mb4_hungarian_ci NOT NULL,
   `lname` varchar(20) COLLATE utf8mb4_hungarian_ci NOT NULL
@@ -72,9 +72,21 @@ CREATE TABLE `rents` (
 --
 
 INSERT INTO `rents` (`lplate`, `email`, `startdate`, `fname`, `lname`) VALUES
+('bgt255', 'barbar.aladar@gmail.com', '2022-09-07', 'Barbár', 'Aladár'),
 ('asd123', 'sarkasbazsi@gmail.com', '2022-09-01', 'Sarkosított', 'Balázs'),
-('lkj234', 'vitezlajos@gmail.com', '2022-08-31', 'Vitéz', 'Lajos'),
-('bgt255', 'barbar.aladar@gmail.com', '2022-09-07', 'Barbár', 'Aladár');
+('lkj234', 'vitezlajos@gmail.com', '2022-08-31', 'Vitéz', 'Lajos');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE `users` (
+  `useremail` varchar(40) COLLATE utf8mb4_hungarian_ci NOT NULL,
+  `username` varchar(40) COLLATE utf8mb4_hungarian_ci NOT NULL,
+  `userpassword` text COLLATE utf8mb4_hungarian_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_hungarian_ci;
 
 --
 -- Indexes for dumped tables
@@ -90,7 +102,14 @@ ALTER TABLE `cars`
 -- Indexes for table `rents`
 --
 ALTER TABLE `rents`
+  ADD PRIMARY KEY (`email`),
   ADD KEY `cars-rents` (`lplate`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD KEY `useremail` (`useremail`);
 
 --
 -- Constraints for dumped tables
@@ -101,6 +120,12 @@ ALTER TABLE `rents`
 --
 ALTER TABLE `rents`
   ADD CONSTRAINT `cars-rents` FOREIGN KEY (`lplate`) REFERENCES `cars` (`lplate`);
+
+--
+-- Constraints for table `users`
+--
+ALTER TABLE `users`
+  ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`useremail`) REFERENCES `rents` (`email`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
