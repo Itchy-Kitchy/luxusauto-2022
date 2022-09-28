@@ -1,13 +1,19 @@
 const loadEvent = () => {
-    const lplate = window.location.href.split("/").pop();
-    const url = `http://localhost:8080/api/cars/${lplate}`;
+    
+    const getlplate = new URLSearchParams(window.location.search);
+    console.log(getlplate.get("CARID"));
+    // const lplate = window.location.href.split("/").pop();
+    const url = `http://localhost:8080/api/cars/${getlplate.get("CARID")}`;
     const token = 'Bearer: ' + sessionStorage.token;
     const root = document.getElementById('root');
     
     const getAuto = async () => {
         const singleAuto = await fetch(url, {
             method: 'GET',
-            headers: {'Authorization': token}
+            headers: {
+                'Authorization': token,
+                'Content-type': 'application/json;charset=utf-8'
+            }
         });
         return singleAuto.json()
     }
@@ -25,31 +31,35 @@ const loadEvent = () => {
             <p class="card-text">Szín: ${car.color}</p>
             <hr>
             <h5 class="card-text text-center">Bérlés</h5>
-            <form>
                 <div class="row">
-                    <div class="form-group col-md-6">
-                        <label for="fname">Vezetéknév:</label>
-                        <input type="text" name="fname" class="form-control" id="firstname">
+                    <div class="col-md">
+                    <label for="fname">Email cím:</label>
+                    <input type="email" name="useremail" class="" id="useremail">
+                </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="firstname">Vezetéknév:</label>
+                        <input type="text" name="firstname" class="" id="firstname">
                     </div>
-                    <div class="form-group col-md-6">
-                        <label for="lname">Keresztnév:</label>
-                        <input type="text" name="lname" class="form-control" id="lastname">
+                    <div class="col-md-6">
+                        <label for="lastname">Keresztnév:</label>
+                        <input type="text" name="lastname" class="" id="lastname">
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group col-md-6">
+                    <div class="col-md-6">
                         <label for="startdate">Bérlési időszak kezdete:</label>
-                        <input type="date" name="startdate" class="form-control" id="startdate">
+                        <input type="date" name="startdate" class="" id="startdate">
                     </div>
-                    <div class="form-group col-md-6">
-                        <label for="startdate">Bérlési időszak kezdete:</label>
-                        <input type="date" name="startdate" class="form-control" id="enddate">
+                    <div class="col-md-6">
+                        <label for="enddate">Bérlési időszak vége:</label>
+                        <input type="date" name="enddate" class="" id="enddate">
                     </div>
                 </div>
                 <div class="row mx-auto">
-                    <button type="submit" class="btn btn-success btn-lg mt-4" id="rental"><strong>Bérelem!</strong></button>
+                    <button class="btn btn-success btn-lg mt-4" id="rental" onclick="submit()"><strong>Bérelem!</strong></button>
                 </div>
-            </form>
         </div>`
     const autoCardDiv = document.createElement("div");
     const classes = ["card", "mx-4", "my-4", "border", "border-secondary", "rounded"];
@@ -59,7 +69,7 @@ const loadEvent = () => {
         root.appendChild(autoCardDiv);
     }
 
-    console.log(window.location.href)
+    console.log(window.location.href);
 
     const viewAuto = (data) => {
         data.forEach(element => {

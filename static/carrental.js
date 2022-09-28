@@ -1,11 +1,12 @@
-document.getElementById("rental").onclick = function (e) {
-    e.preventDefault();
+  function submit() {
 
-    const lplate = window.location.href.split("/").pop();
-    const url = `http://localhost:8080/api/cars/${lplate}`;
+    const postlplate = new URLSearchParams(window.location.search);
+    console.log(postlplate.get("CARID"));
+    const url = `http://localhost:8080/api/cars/${postlplate.get("CARID")}`;
     const token = 'Bearer: ' + sessionStorage.token;
 
     if (
+        document.getElementById("useremail").value == "" ||
         document.getElementById("firstname").value == "" ||
         document.getElementById("lastname").value == "" ||
         document.getElementById("startdate").value == "" ||
@@ -21,7 +22,7 @@ document.getElementById("rental").onclick = function (e) {
                 'Content-type': 'application/json;charset=utf-8'
             },
             body: JSON.stringify({
-                "useremail": sessionStorage.useremail,
+                "useremail": document.getElementById("useremail").value,
                 "firstname": document.getElementById("firstname").value,
                 "lastname": document.getElementById("lastname").value,
                 "startdate": document.getElementById("startdate").value,
@@ -33,3 +34,4 @@ document.getElementById("rental").onclick = function (e) {
         .catch(err => console.log(err));
     }
 }
+

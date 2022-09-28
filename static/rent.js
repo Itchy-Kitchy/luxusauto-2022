@@ -1,25 +1,32 @@
 const loadEvent = () => {
+
+    const thisemail = new URLSearchParams(window.location.search);
+    console.log(thisemail.get("RENTEMAIL"));
+    const url = `http://localhost:8080/api/admin/rents/${thisemail.get("RENTEMAIL")}`
     const root = document.getElementById('root');
-    const email = window.location.href.split("/").pop();
 
     const getRent = async () => {
-        const singleRent = await fetch(`http://localhost:8080/api/admin/rents/${email}`);
-        return singleRent.json()
+        const singleRent = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-type': 'application/json;charset=utf-8'
+            }
+        });
+        return singleRent.json();
     }
 
     const rentCardMaker = (rent) => {
         const rentCardContent = `
         <div class="card-body d-flex flex-column justify-content-end">
-        <h4 class="card-title">${rent.email}</h4>
-        <p class="card-text">Rendszám: <strong>${rent.lplate}</strong></p>
-        <p class="card-text">Név: <strong>${rent.fname} ${rent.lname}</strong></p>
-        <p class="card-text">Kezdés: <strong>${rent.startdate}</strong></p>
-    </div>
-    <div class="row mx-auto">
-        <form class="mb-2" action="http://localhost:8080/admin/rents/${rent.email}" method="post">
-            <button type="submit" class="btn btn-danger btn-lg mt-4"><strong>Törlés</strong></button>
-        </form>
-    </div>`
+        <h4 class="card-title">${rent[0].useremail}</h4>
+        <p class="card-text">Rendszám: <strong>${rent[0].lplate}</strong></p>
+        <p class="card-text">Név: <strong>${rent[0].firstname} ${rent[0].lastname}</strong></p>
+        <p class="card-text">Bérlés kezdete: <strong>${rent[0].startdate}</strong></p>
+        <p class="card-text">Bérlés vége: <strong>${rent[0].enddate}</strong></p>
+        </div>
+        <div class="row mx-auto">
+            <button class="btn btn-danger btn-lg mt-4" onclick="del()"><strong>Törlés</strong></button>
+        </div>`
     const rentCardDiv = document.createElement("div");
     const classes = ["card", "mx-4", "mt-4", "border", "border-danger", "rounded"];
         rentCardDiv.classList.add(...classes);
@@ -28,7 +35,25 @@ const loadEvent = () => {
         root.appendChild(rentCardDiv);
     }
 
-    getRent().then((response) => rentCardMaker(response));
+    getRent()
+    .then((response) => {
+        rentCardMaker(response);
+        window.thislplate = response[0].lplate;
+    })
+    .catch(error => alert(error));
 }
 
 window.addEventListener('load', loadEvent);
+
+function del() {
+    const delurl = `http://localhost:8080/api/admin/rents/${thislplate}`
+
+    fetch(delurl, {
+        method: "POST",
+    })
+    .then((response) => response.json())
+    .then(json => console.log(json.message))
+    .catch(err => console.log(err));
+
+    window.location = "rents.html";
+}

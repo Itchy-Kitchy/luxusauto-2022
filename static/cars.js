@@ -10,15 +10,15 @@ const loadEvent = () => {
         });
         return allAutos.json()
     }
-
+    
     const autoCardMaker = (car) => {
         const autoCardContent = `
         <img class="card-img-top" src="${car.imageURL}" alt="${car.type}">
         <div class="card-body d-flex flex-column justify-content-end">
             <h4 class="card-title">${car.brand} ${car.type}</h4>
             <p class="card-text">${car.rentprice} Ft/ hó</p>
-            <a href="http://localhost:8080/api/cars/${car.lplate}" class="btn btn-secondary ">Megtekintés</a>
-        </div>`
+            <button id="${car.lplate}" class="btn btn-secondary" onclick="nav(this)">Megtekintés</button>
+        </div>`;
     const autoCardDiv = document.createElement("div");
     const classes = ["card", "mx-4", "mb-4", "border", "border-secondary", "rounded"];
         autoCardDiv.classList.add(...classes);
@@ -38,7 +38,6 @@ const loadEvent = () => {
     getAutos()
     .then((response) => viewAutos(response))
     .catch(error => alert(error))
-
 }
 
 window.addEventListener('load', loadEvent);
