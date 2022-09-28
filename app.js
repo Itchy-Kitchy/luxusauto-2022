@@ -120,7 +120,7 @@ app.get('/api/allcars', (req, res) => {
 
 // Elérhető autók
 
-app.get('/api/cars', authenticateToken, (req, res) => {
+app.get('/api/cars', (req, res) => {
     const getavailablecars = "SELECT * FROM cars WHERE available = 1";
     pool.query(getavailablecars,
         function (error, results) {
@@ -158,21 +158,30 @@ app.get('/api/cars/:lplate', (req, res) => {
 
 // Autó bérlése
 
-app.post('api/cars/:lplate', authenticateToken, (req, res) => {
-    const rentcar = "INSERT INTO rents (lplate, useremail, firstname, lastname, startdate, enddate) VALUES (?, ?, ?, ?, ?, ?)";
+app.post('/api/cars/:lplate', authenticateToken,  (req, res) => {
+    const rentcar = "INSERT INTO rents (lplate, useremail, startdate, enddate, firstname, lastname) VALUES (?, ?, ?, ?, ?, ?)";
     const setcarunavailable = "UPDATE cars SET available = 0 WHERE lplate=?";
     pool.query(
-        rentcar,
-        [req.params.lplate],
-        [req.body.useremail],
-        [req.body.firstname],
-        [req.body.lastname],
-        [req.body.startdate],
-        [req.body.enddate],
+        rentcar, [
+        req.params.lplate,
+        req.body.useremail,
+        req.body.startdate,
+        req.body.enddate,
+        req.body.firstname,
+        req.body.lastname
+        ],
         function (error, results) {
             if (!error) {
-                pool.query(setcarunavailable, [req.params.lplate]);
-                return res.status(201).send({message: "Sikeres bérlés!"});
+                pool.query(setcarunavailable, [req.params.lplate],
+                    function (error, results) {
+                        if (!error) {
+                            return res.status(201).send({message: "Sikeres bérlés!"});
+                        }
+                        else {
+                            return res.status(500).send({message: error});
+                        }
+                    }
+                );
             }
             else {
                 return res.status(500).send({message: error});
@@ -215,7 +224,7 @@ app.get('/api/admin/rents', (req, res) => {
 // Konkrét bérlés
 
 app.get('/api/admin/rents/:email', (req, res) => {
-    const getrent = "SELECT * FROM rents WHERE email =?";
+    const getrent = "SELECT * FROM rents WHERE useremail =?";
     pool.query(getrent, [req.params.email],
         function (error, results) {
             if (!results[0]) {
@@ -233,15 +242,25 @@ app.get('/api/admin/rents/:email', (req, res) => {
 
 // Bérlés törlése
 
-app.post('/api/admin/rents/:email', (req, res) => {
-    const delrent = "DELETE FROM rents WHERE email =?"
-    pool.query(delrent, [req.params.email],
+app.post('/api/admin/rents/:lplate', (req, res) => {
+    const delrent = "DELETE FROM rents WHERE lplate=?";
+    const setcaravailable = "UPDATE cars SET available = 1 WHERE lplate=?";
+    pool.query(delrent, [req.params.lplate],
         function (error, results) {
             if (!results[0]) {
                 return res.status(204).send({message: "Nincs ezzel az email címmel bérlés!"});
             }
             if (!error) {
-                return res.status(200).send({message: "Rendelés törölve!"});
+                pool.query(setcaravailable, [req.params.lplate],
+                    function (error, results) {
+                        if (!error) {
+                            return res.status(201).send({message: "Rendelés törölve!"});
+                        }
+                        else {
+                            return res.status(500).send({message: error});
+                        }
+                    }    
+                );
             }
             else {
                 return res.status(500).send({message: error});
