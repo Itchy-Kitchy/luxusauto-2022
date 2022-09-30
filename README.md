@@ -8,7 +8,7 @@
 Ez egy luxusautó bérlő webalkalmazás forráskódja. Az oldalon lehetőség nyílik luxus sportjárművek bérlésére illetve az admin felületen a bérlések kezelésére.
 
 ### Használat
-Az api server az app.js node szerver indításával futtatható.
+Az api szerver az app.js node szerver indításával futtatható.
 
 Az kliens oldalon a bejelentkezés lehetőségre kattintva bejelentkezhet a felhsználó vagy létrehozhat egy új felhasználót. A bejelentkezést követően az oldalon megjelenő járművek megtekinthetőek és bérelhetőek.
 
