@@ -9,6 +9,7 @@ const loadEvent = () => {
     }
 
     const rentCardMaker = (rent) => {
+        const rentduration = (new Date(rent.enddate) - new Date(rent.startdate)) / (1000 * 60 * 60 * 24)
         const rentCardContent = `
         <div class="card mx-4 border border-danger rounded" style="background-color: lightgrey;">
             <div class="card-body d-flex flex-column justify-content-end">
@@ -16,7 +17,8 @@ const loadEvent = () => {
                 <p class="card-text">Rendszám: <strong>${rent.lplate}</strong></p>
                 <p class="card-text">Név: <strong>${rent.firstname} ${rent.lastname}</strong></p>
                 <p class="card-text">Bérlés kezdete: <strong>${rent.startdate}</strong></p>
-                <p class="card-text">Bérlés vége: <strong>${rent.startdate}</strong></p>
+                <p class="card-text">Bérlés vége: <strong>${rent.enddate}</strong></p>
+                <p class="card-text">Bérlés hossza: <strong>${rentduration} nap</strong></p>
                 <button id="${rent.useremail}" class="btn btn-primary" onclick="nav(this)">Kezelés</button>
             </div>
         </div>`

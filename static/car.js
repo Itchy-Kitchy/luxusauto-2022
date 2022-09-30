@@ -31,35 +31,35 @@ const loadEvent = () => {
             <p class="card-text">Szín: ${car.color}</p>
             <hr>
             <h5 class="card-text text-center">Bérlés</h5>
-                <div class="row">
-                    <div class="col-md">
+            <div class="row">
+                <div class="col-md form-group">
                     <label for="fname">Email cím:</label>
-                    <input type="email" name="useremail" class="" id="useremail">
+                    <input type="email" name="useremail" class="form-control" id="useremail">
                 </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    <label for="firstname">Vezetéknév:</label>
+                    <input type="text" name="firstname" class="form-control" id="firstname">
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <label for="firstname">Vezetéknév:</label>
-                        <input type="text" name="firstname" class="" id="firstname">
-                    </div>
-                    <div class="col-md-6">
-                        <label for="lastname">Keresztnév:</label>
-                        <input type="text" name="lastname" class="" id="lastname">
-                    </div>
+                <div class="col-md-6 form-group">
+                    <label for="lastname">Keresztnév:</label>
+                    <input type="text" name="lastname" class="form-control" id="lastname">
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <label for="startdate">Bérlési időszak kezdete:</label>
-                        <input type="date" name="startdate" class="" id="startdate">
-                    </div>
-                    <div class="col-md-6">
-                        <label for="enddate">Bérlési időszak vége:</label>
-                        <input type="date" name="enddate" class="" id="enddate">
-                    </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    <label for="startdate">Bérlési időszak kezdete:</label>
+                    <input type="date" name="startdate" class="form-control" id="startdate">
                 </div>
-                <div class="row mx-auto">
-                    <button class="btn btn-success btn-lg mt-4" id="rental" onclick="submit()"><strong>Bérelem!</strong></button>
+                <div class="col-md-6 form-group">
+                    <label for="enddate">Bérlési időszak vége:</label>
+                    <input type="date" name="enddate" class="form-control" id="enddate">
                 </div>
+            </div>
+            <div class="row mx-auto w-100">
+                <button class="btn btn-success btn-lg mt-4" id="rental" onclick="submit()"><strong>Bérelem!</strong></button>
+            </div>
         </div>`
     const autoCardDiv = document.createElement("div");
     const classes = ["card", "mx-4", "my-4", "border", "border-secondary", "rounded"];

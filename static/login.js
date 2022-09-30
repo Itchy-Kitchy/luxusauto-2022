@@ -20,7 +20,7 @@ document.getElementById("ok").onclick = function (e) {
         })
         .then((response) => {
             let ok = response.ok
-            return response.json()    
+            return response.json()
         })
         .then((json) => {
             sessionStorage.token = json.token;

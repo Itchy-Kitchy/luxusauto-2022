@@ -30,7 +30,12 @@
             })
         })
         .then((response) => response.json())
-        .then(json => alert(json.message))
+        .then(json => {
+            let redirect = confirm(json.message);
+            if (redirect) {
+                window.location = "cars.html"
+            }
+        })
         .catch(err => console.log(err));
     }
 }

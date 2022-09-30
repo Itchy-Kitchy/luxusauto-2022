@@ -24,8 +24,8 @@ const loadEvent = () => {
         <p class="card-text">Bérlés kezdete: <strong>${rent[0].startdate}</strong></p>
         <p class="card-text">Bérlés vége: <strong>${rent[0].enddate}</strong></p>
         </div>
-        <div class="row mx-auto">
-            <button class="btn btn-danger btn-lg mt-4" onclick="del()"><strong>Törlés</strong></button>
+        <div class="row mx-auto px-4 my-4 w-100">
+            <button class="btn btn-danger btn-lg" onclick="del()"><strong>Törlés</strong></button>
         </div>`
     const rentCardDiv = document.createElement("div");
     const classes = ["card", "mx-4", "mt-4", "border", "border-danger", "rounded"];
@@ -46,14 +46,17 @@ const loadEvent = () => {
 window.addEventListener('load', loadEvent);
 
 function del() {
-    const delurl = `http://localhost:8080/api/admin/rents/${thislplate}`
+    const delforsure = confirm("Biztosan törli az adott rendelést?");
+    if (delforsure) {
+        const delurl = `http://localhost:8080/api/admin/rents/${thislplate}`
 
-    fetch(delurl, {
-        method: "POST",
-    })
-    .then((response) => response.json())
-    .then(json => console.log(json.message))
-    .catch(err => console.log(err));
+        fetch(delurl, {
+            method: "POST",
+        })
+        .then((response) => response.json())
+        .then(json => console.log(json.message))
+        .catch(err => console.log(err));
 
-    window.location = "rents.html";
+        window.location = "rents.html";
+    }
 }
