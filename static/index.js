@@ -5,10 +5,7 @@ const loadEvent = () => {
 
     const getAutos = async () => {
         const allAutos = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token
-            }
+            method: 'GET'
         });
         return allAutos.json()
     }
