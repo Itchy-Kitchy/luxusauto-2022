@@ -10,7 +10,7 @@ Ez egy luxusautó bérlő webalkalmazás forráskódja. Az oldalon lehetőség n
 ### Használat
 Az api szerver az app.js node szerver indításával futtatható.
 
-Az kliens oldalon a bejelentkezés lehetőségre kattintva bejelentkezhet a felhsználó vagy létrehozhat egy új felhasználót. A bejelentkezést követően az oldalon megjelenő járművek megtekinthetőek és bérelhetőek.
+Az kliens oldalon a bejelentkezés lehetőségre kattintva bejelentkezhet a felhasználó vagy létrehozhat egy új felhasználót. A bejelentkezést követően az oldalon megjelenő járművek megtekinthetőek és bérelhetőek.
 
 A megjelenő oldal jobb alsó sarkában található piros "admin" linkre kattintva bejelentkezhet az admin felületre ahonnan a bérlések kezelhetőek.
 Az admin felület jelszava: teslaisbest
