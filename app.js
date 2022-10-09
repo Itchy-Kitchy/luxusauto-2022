@@ -246,10 +246,7 @@ app.post('/api/admin/rents/:lplate', (req, res) => {
     const setcaravailable = "UPDATE cars SET available=1 WHERE lplate=?";
     pool.query(setcaravailable, [req.params.lplate],
         function (error, results) {
-            if (!results[0]) {
-                return res.status(204).send({message: "Ez az autó már elérhető!"});
-            }
-            else if (!error) {
+            if (!error) {
                 return res.status(200).send({message: "Az " + req.params.lplate + " rendszámú autó most már elérhető!"});
             }
             else {
