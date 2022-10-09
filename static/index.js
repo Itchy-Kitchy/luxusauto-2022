@@ -1,6 +1,6 @@
 const loadEvent = () => {
     const url = 'http://localhost:8080/api/allcars';
-    const token = 'Bearer: ' + sessionStorage.token;
+    // const token = 'Bearer: ' + sessionStorage.token;
     const root = document.getElementById('root');
 
     const getAutos = async () => {
